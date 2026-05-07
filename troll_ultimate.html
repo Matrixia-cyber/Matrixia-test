@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Les 4 Épreuves du TROLL 😈 | Purple Studio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #bc13fe;
+            --secondary: #ff006e;
+            --accent: #7d2ae8;
+            --dark: #0f051a;
+            --darker: #07020d;
+            --card-bg: rgba(26, 11, 46, 0.85);
+            --text: #f0e6ff;
+            --text-dim: #a692b0;
+            --glass: rgba(188, 19, 254, 0.15);
+            --neon-green: #39ff14;
+            --neon-gold: #ffd700;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: var(--darker);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background:
+                radial-gradient(circle at 10% 20%, rgba(125, 42, 232, 0.2) 0%, transparent 50%),
+                radial-gradient(circle at 90% 80%, rgba(255, 0, 110, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(188, 19, 254, 0.05) 0%, transparent 70%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Particules de fond animées */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image:
+                radial-gradient(1px 1px at 20% 30%, rgba(188,19,254,0.6) 0%, transparent 100%),
+                radial-gradient(1px 1px at 80% 70%, rgba(255,0,110,0.6) 0%, transparent 100%),
+                radial-gradient(1px 1px at 50% 10%, rgba(125,42,232,0.5) 0%, transparent 100%),
+                radial-gradient(1px 1px at 30% 80%, rgba(188,19,254,0.4) 0%, transparent 100%),
+                radial-gradient(1px 1px at 70% 20%, rgba(255,0,110,0.4) 0%, transparent 100%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px) rotate(-5deg); }
+            75% { transform: translateX(10px) rotate(5deg); }
+        }
+
+        @keyframes neonPulse {
+            0%, 100% { text-shadow: 0 0 10px var(--primary), 0 0 20px var(--primary), 0 0 40px var(--primary); }
+            50% { text-shadow: 0 0 5px var(--primary), 0 0 10px var(--primary); }
+        }
+
+        @keyframes borderGlow {
+            0%, 100% { box-shadow: 0 0 10px var(--primary), 0 0 20px rgba(188,19,254,0.3); }
+            50% { box-shadow: 0 0 20px var(--primary), 0 0 40px rgba(188,19,254,0.5); }
+        }
+
+        @keyframes floatUp {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .container {
+            text-align: center;
+            position: relative;
+            width: 100%;
+            max-width: 1000px;
+            z-index: 1;
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.8rem;
+            font-weight: 900;
+            margin-bottom: 15px;
+            background: linear-gradient(to right, #fff, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: neonPulse 3s ease-in-out infinite;
+            filter: drop-shadow(0 0 8px rgba(188,19,254,0.5));
+        }
+
+        #levelInfo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.4rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-shadow: 0 0 15px var(--primary);
+        }
+
+        #gameArea {
+            position: relative;
+            width: 900px;
+            height: 550px;
+            background: var(--card-bg);
+            border: 2px solid var(--primary);
+            border-radius: 20px;
+            overflow: hidden;
+            margin: 0 auto;
+            animation: borderGlow 3s ease-in-out infinite;
+            backdrop-filter: blur(10px);
+        }
+
+        /* NIVEAU 1 */
+        #theButton {
+            position: absolute;
+            padding: 18px 38px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(188,19,254,0.5), 0 5px 15px rgba(0,0,0,0.3);
+            transition: 0.2s;
+            letter-spacing: 2px;
+        }
+
+        #theButton:hover {
+            box-shadow: 0 0 30px rgba(188,19,254,0.8), 0 0 60px rgba(255,0,110,0.4);
+        }
+
+        .fake-button {
+            position: absolute;
+            padding: 12px 25px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            background: rgba(255,255,255,0.05);
+            color: var(--text-dim);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            cursor: not-allowed;
+            opacity: 0.4;
+        }
+
+        /* NIVEAU 2 */
+        #mouseEmoji {
+            position: absolute;
+            font-size: 70px;
+            cursor: pointer;
+            user-select: none;
+            filter: drop-shadow(0 0 15px rgba(188,19,254,0.8));
+            animation: floatUp 2s ease-in-out infinite;
+        }
+
+        #clickProgress {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 400px;
+            height: 35px;
+            background: rgba(0,0,0,0.5);
+            border: 2px solid var(--primary);
+            border-radius: 20px;
+            overflow: hidden;
+            display: none;
+            box-shadow: 0 0 10px rgba(188,19,254,0.4);
+        }
+
+        #clickProgressBar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--accent), var(--primary), var(--secondary));
+            transition: width 0.1s;
+        }
+
+        /* NIVEAU 3 */
+        #passwordScreen {
+            width: 100%;
+            height: 100%;
+            background: rgba(7, 2, 13, 0.95);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        #passwordInput {
+            padding: 15px 25px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.3rem;
+            border: 2px solid var(--primary);
+            background: rgba(188,19,254,0.05);
+            color: var(--primary);
+            border-radius: 12px;
+            text-align: center;
+            outline: none;
+            box-shadow: 0 0 15px rgba(188,19,254,0.3);
+            letter-spacing: 4px;
+        }
+
+        #passwordInput::placeholder {
+            color: var(--text-dim);
+            letter-spacing: 2px;
+        }
+
+        #passwordHint {
+            color: var(--text-dim);
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.1rem;
+            letter-spacing: 2px;
+        }
+
+        /* NIVEAU 4 */
+        #colorScreen {
+            width: 100%;
+            height: 100%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.4rem;
+            color: white;
+            text-shadow: 0 0 20px rgba(255,255,255,0.8);
+            animation: colorShift 2s linear infinite;
+            text-align: center;
+            padding: 20px;
+        }
+
+        @keyframes colorShift {
+            0%   { background: rgba(188,19,254,0.8); }
+            16%  { background: rgba(255,0,110,0.8); }
+            33%  { background: rgba(125,42,232,0.8); }
+            50%  { background: rgba(0,200,255,0.6); }
+            66%  { background: rgba(255,0,110,0.8); }
+            83%  { background: rgba(188,19,254,0.8); }
+            100% { background: rgba(188,19,254,0.8); }
+        }
+
+        /* MENU PAUSE */
+        #pauseMenu {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(7, 2, 13, 0.97);
+            padding: 35px;
+            border: 2px solid var(--primary);
+            border-radius: 20px;
+            z-index: 2000;
+            display: none;
+            color: var(--text);
+            box-shadow: 0 0 40px rgba(188,19,254,0.4), 0 0 80px rgba(188,19,254,0.2);
+            backdrop-filter: blur(20px);
+            min-width: 400px;
+        }
+
+        #pauseMenu h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 3px;
+        }
+
+        #pauseMenu button {
+            padding: 12px 25px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 700;
+            margin: 8px;
+            cursor: pointer;
+            border: 2px solid var(--primary);
+            border-radius: 10px;
+            background: transparent;
+            color: var(--primary);
+            transition: 0.3s;
+            letter-spacing: 1px;
+        }
+
+        #pauseMenu button:hover {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 0 15px var(--primary);
+        }
+
+        #pauseMenu button.quit-btn {
+            border-color: var(--secondary);
+            color: var(--secondary);
+        }
+
+        #pauseMenu button.quit-btn:hover {
+            background: var(--secondary);
+            color: white;
+            box-shadow: 0 0 15px var(--secondary);
+        }
+
+        .pause-section {
+            margin: 15px 0;
+            padding: 15px 20px;
+            background: rgba(188,19,254,0.05);
+            border: 1px solid rgba(188,19,254,0.15);
+            border-radius: 12px;
+        }
+
+        .pause-section h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.85rem;
+            color: var(--primary);
+            margin-bottom: 12px;
+            letter-spacing: 2px;
+        }
+
+        .pause-section label {
+            color: var(--text-dim);
+            font-size: 0.95rem;
+        }
+
+        .pause-section input[type="range"] {
+            accent-color: var(--primary);
+        }
+
+        .pause-section select {
+            padding: 5px 10px;
+            background: rgba(0,0,0,0.5);
+            border: 1px solid var(--primary);
+            color: var(--text);
+            border-radius: 6px;
+            font-family: 'Rajdhani', sans-serif;
+        }
+
+        #contrastSlider {
+            width: 280px;
+            height: 6px;
+            margin: 15px 0;
+            accent-color: var(--primary);
+        }
+
+        #contrastValue {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.1rem;
+            color: var(--primary);
+        }
+
+        #secretPassword {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.3rem;
+            color: var(--secondary);
+            font-weight: bold;
+            padding: 8px 15px;
+            background: rgba(255,0,110,0.1);
+            border: 1px solid var(--secondary);
+            border-radius: 8px;
+            letter-spacing: 3px;
+            text-shadow: 0 0 10px var(--secondary);
+        }
+
+        #pauseHint {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--card-bg);
+            border: 1px solid rgba(188,19,254,0.3);
+            color: var(--text-dim);
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-family: 'Rajdhani', sans-serif;
+            letter-spacing: 1px;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 900;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 0 15px rgba(188,19,254,0.8));
+            pointer-events: none;
+            z-index: 1500;
+            display: none;
+            animation: spin 1s linear infinite;
+            letter-spacing: 3px;
+        }
+
+        #victoryScreen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(7, 2, 13, 0.97);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 3000;
+            gap: 20px;
+        }
+
+        #victoryScreen h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 4rem;
+            font-weight: 900;
+            background: linear-gradient(to right, var(--neon-gold), #fff, var(--neon-gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: shake 0.5s infinite;
+            filter: drop-shadow(0 0 20px rgba(255,215,0,0.7));
+        }
+
+        #victoryScreen p {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.5rem;
+            color: var(--text-dim);
+            letter-spacing: 2px;
+        }
+
+        #victoryScreen button {
+            padding: 18px 45px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-top: 20px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            color: white;
+            letter-spacing: 2px;
+            box-shadow: 0 0 30px rgba(188,19,254,0.6);
+            transition: 0.3s;
+        }
+
+        #victoryScreen button:hover {
+            box-shadow: 0 0 50px rgba(188,19,254,0.9);
+            transform: translateY(-3px);
+        }
+
+        /* Étoiles de victoire */
+        .victory-stars {
+            font-size: 3rem;
+            animation: floatUp 1.5s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚡ LES 4 ÉPREUVES DU TROLL 😈</h1>
+        <div id="levelInfo">NIVEAU <span id="currentLevel">1</span> / 4</div>
+        
+        <div id="gameArea">
+            <!-- NIVEAU 1 -->
+            <div id="level1" style="width: 100%; height: 100%;">
+                <button id="theButton">CLIQUE ICI !</button>
+            </div>
+
+            <!-- NIVEAU 2 -->
+            <div id="level2" style="width: 100%; height: 100%; display: none;">
+                <div id="mouseEmoji">🐭</div>
+                <div id="clickProgress">
+                    <div id="clickProgressBar"></div>
+                </div>
+            </div>
+
+            <!-- NIVEAU 3 -->
+            <div id="passwordScreen">
+                <div id="passwordHint">🔐 ENTREZ LE MOT DE PASSE...</div>
+                <input type="text" id="passwordInput" placeholder="MOT DE PASSE">
+            </div>
+
+            <!-- NIVEAU 4 -->
+            <div id="colorScreen">
+                🌑 RENDEZ L'ÉCRAN NOIR POUR GAGNER !
+            </div>
+        </div>
+    </div>
+
+    <div id="pauseHint">Appuyez sur ÉCHAP pour les paramètres</div>
+
+    <div id="pauseMenu">
+        <h2>⚙ PARAMÈTRES</h2>
+        
+        <div style="max-height: 400px; overflow-y: auto; padding-right: 5px;">
+            <!-- AUDIO -->
+            <div class="pause-section">
+                <h3>🔊 AUDIO</h3>
+                <div style="margin: 10px 0;">
+                    <label>Volume Principal : <span id="volMaster">50</span>%</label><br>
+                    <input type="range" id="volMasterSlider" min="0" max="100" value="50" style="width: 250px; margin-top:5px;">
+                </div>
+                <div style="margin: 10px 0;">
+                    <label>Volume Musique : <span id="volMusic">50</span>%</label><br>
+                    <input type="range" id="volMusicSlider" min="0" max="100" value="50" style="width: 250px; margin-top:5px;">
+                </div>
+                <div style="margin: 10px 0;">
+                    <label>Volume Effets : <span id="volSFX">50</span>%</label><br>
+                    <input type="range" id="volSFXSlider" min="0" max="100" value="50" style="width: 250px; margin-top:5px;">
+                </div>
+                <div style="margin: 10px 0;">
+                    <label><input type="checkbox"> Son surround</label>
+                </div>
+            </div>
+
+            <!-- GRAPHIQUES -->
+            <div class="pause-section">
+                <h3>🎨 GRAPHIQUES</h3>
+                <div style="margin: 10px 0;">
+                    <label>Qualité : </label>
+                    <select>
+                        <option>Basse</option>
+                        <option selected>Moyenne</option>
+                        <option>Haute</option>
+                        <option>Ultra</option>
+                    </select>
+                </div>
+                <div style="margin: 10px 0;">
+                    <label>Résolution : </label>
+                    <select>
+                        <option>800x600</option>
+                        <option selected>1920x1080</option>
+                        <option>2560x1440</option>
+                        <option>3840x2160</option>
+                    </select>
+                </div>
+                <div style="margin: 10px 0;">
+                    <label>Luminosité : <span id="brightness">50</span>%</label><br>
+                    <input type="range" min="0" max="100" value="50" style="width: 250px; margin-top:5px;" id="brightnessSlider">
+                </div>
+                <div style="margin: 10px 0; display:flex; gap:20px; flex-wrap:wrap;">
+                    <label><input type="checkbox" checked> V-Sync</label>
+                    <label><input type="checkbox"> Anti-aliasing</label>
+                    <label><input type="checkbox" checked> Ombres dynamiques</label>
+                </div>
+            </div>
+
+            <!-- CONTRÔLES -->
+            <div class="pause-section">
+                <h3>🎮 CONTRÔLES</h3>
+                <div style="margin: 10px 0;">
+                    <label>Sensibilité souris : <span id="mouseSens">50</span>%</label><br>
+                    <input type="range" min="0" max="100" value="50" style="width: 250px; margin-top:5px;" id="mouseSensSlider">
+                </div>
+                <div style="margin: 10px 0; display:flex; gap:20px; flex-wrap:wrap;">
+                    <label><input type="checkbox" checked> Inverser l'axe Y</label>
+                    <label><input type="checkbox"> Vibrations manette</label>
+                </div>
+            </div>
+
+            <!-- GAMEPLAY -->
+            <div class="pause-section">
+                <h3>⚔ GAMEPLAY</h3>
+                <div style="margin: 10px 0;">
+                    <label>Difficulté : </label>
+                    <select>
+                        <option>Facile</option>
+                        <option selected>Normal</option>
+                        <option>Difficile</option>
+                        <option>Cauchemar</option>
+                    </select>
+                </div>
+                <div style="margin: 10px 0; display:flex; gap:20px; flex-wrap:wrap;">
+                    <label><input type="checkbox" checked> Afficher les indices</label>
+                    <label><input type="checkbox"> Mode daltonien</label>
+                    <label><input type="checkbox" checked> Sous-titres</label>
+                </div>
+            </div>
+
+            <!-- INTERFACE -->
+            <div class="pause-section">
+                <h3>📺 INTERFACE</h3>
+                <div style="margin: 10px 0;">
+                    <label>Taille HUD : <span id="hudSize">100</span>%</label><br>
+                    <input type="range" min="50" max="150" value="100" style="width: 250px; margin-top:5px;" id="hudSizeSlider">
+                </div>
+                <div style="margin: 10px 0; display:flex; gap:20px; flex-wrap:wrap;">
+                    <label><input type="checkbox" checked> Mini-map</label>
+                    <label><input type="checkbox" checked> Afficher les FPS</label>
+                </div>
+            </div>
+
+            <!-- LANGUE -->
+            <div class="pause-section">
+                <h3>🌍 LANGUE</h3>
+                <div style="margin: 10px 0;">
+                    <label>Langue : </label>
+                    <select>
+                        <option selected>Français</option>
+                        <option>English</option>
+                        <option>Español</option>
+                        <option>Deutsch</option>
+                        <option>Italiano</option>
+                        <option>日本語</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- MOT DE PASSE CACHÉ (niveau 3) -->
+            <div class="pause-section" id="passwordSection" style="display: none;">
+                <h3 style="color: var(--secondary) !important;">🔑 INFORMATIONS SYSTÈME</h3>
+                <div style="margin: 10px 0; font-size: 0.9rem; color: var(--text-dim);">
+                    <p>Version du jeu : 1.0.42</p>
+                    <p>Build : 2025-02-12-TROLL</p>
+                    <p>ID Session : #A7F2E9</p>
+                    <p style="margin-top:10px;">Token d'accès : <span id="secretPassword">TROLL2025</span></p>
+                    <p>Serveur : EU-WEST-3</p>
+                </div>
+            </div>
+
+            <!-- CONTRASTE (niveau 4) -->
+            <div class="pause-section" id="contrastSection" style="display: none;">
+                <h3>🎨 CONTRASTE</h3>
+                <div style="margin: 10px 0;">
+                    <label>Ajustement du contraste : <span id="contrastValue">0</span>%</label><br>
+                    <input type="range" id="contrastSlider" min="-200" max="100" value="0">
+                    <p style="font-size: 0.8rem; color: var(--text-dim); margin-top: 5px;">Ajustez pour améliorer la visibilité</p>
+                </div>
+            </div>
+        </div>
+
+        <div style="margin-top: 20px; display:flex; gap:10px; justify-content:center;">
+            <button onclick="resumeGame()">▶ REPRENDRE</button>
+            <button class="quit-btn" onclick="location.reload()">✕ QUITTER</button>
+        </div>
+    </div>
+
+    <div class="message" id="message"></div>
+
+    <div id="victoryScreen">
+        <div class="victory-stars">⭐ ⭐ ⭐</div>
+        <h1>🏆 FÉLICITATIONS ! 🏆</h1>
+        <p>Tu as vaincu les 4 épreuves du TROLL !</p>
+        <button onclick="location.reload()">↻ REJOUER</button>
+    </div>
+
+    <script>
+        let currentLevel = 1;
+        let isPaused = false;
+        
+        // NIVEAU 1 - Variables
+        let score1 = 0;
+        const button = document.getElementById('theButton');
+        const gameArea = document.getElementById('gameArea');
+        const fakeButtons = [];
+
+        // NIVEAU 2 - Variables
+        const mouseEmoji = document.getElementById('mouseEmoji');
+        const clickProgress = document.getElementById('clickProgress');
+        const clickProgressBar = document.getElementById('clickProgressBar');
+        let mouseX = 400;
+        let mouseY = 300;
+        let mouseMoveInterval;
+        let clickHoldProgress = 0;
+        let isHoldingMouse = false;
+        let isHoldingRealMouse = false;
+
+        // NIVEAU 3 - Variables
+        const passwordInput = document.getElementById('passwordInput');
+        const PASSWORD = 'TROLL2025';
+
+        // NIVEAU 4 - Variables
+        const contrastSlider = document.getElementById('contrastSlider');
+        const colorScreen = document.getElementById('colorScreen');
+        let currentContrast = 0;
+
+        // NIVEAU 1 - Logique
+        function moveButton(countAttempt = false) {
+            const maxX = gameArea.offsetWidth - button.offsetWidth;
+            const maxY = gameArea.offsetHeight - button.offsetHeight;
+            
+            button.style.left = Math.random() * maxX + 'px';
+            button.style.top = Math.random() * maxY + 'px';
+        }
+
+        function createFakeButton() {
+            const fake = document.createElement('button');
+            fake.className = 'fake-button';
+            fake.textContent = 'Faux !';
+            fake.style.left = Math.random() * (gameArea.offsetWidth - 100) + 'px';
+            fake.style.top = Math.random() * (gameArea.offsetHeight - 50) + 'px';
+            document.getElementById('level1').appendChild(fake);
+            fakeButtons.push(fake);
+            
+            fake.addEventListener('click', () => {
+                showMessage("RATÉ ! 😂");
+                fake.style.left = Math.random() * (gameArea.offsetWidth - 100) + 'px';
+                fake.style.top = Math.random() * (gameArea.offsetHeight - 50) + 'px';
+            });
+        }
+
+        button.addEventListener('mouseenter', () => {
+            if (score1 >= 2 && !isPaused) {
+                moveButton(false);
+            }
+        });
+
+        setInterval(() => {
+            if (score1 >= 2 && !isPaused && currentLevel === 1) {
+                moveButton(false);
+            }
+        }, 800);
+
+        button.addEventListener('click', (e) => {
+            e.stopPropagation();
+            
+            if (score1 >= 2 && !isPaused) {
+                showMessage("Raté ! 😏");
+                return;
+            }
+            
+            score1++;
+            
+            if (score1 <= 2) {
+                showMessage("BIEN ! " + (5 - score1) + " restants !");
+            } else if (score1 === 3) {
+                for (let i = 0; i < 5; i++) createFakeButton();
+                showMessage("BIEN ! " + (5 - score1) + " restants !");
+                moveButton(false);
+            } else if (score1 >= 5) {
+                completeLevel1();
+            } else {
+                showMessage("BIEN ! " + (5 - score1) + " restants !");
+                moveButton(false);
+            }
+        });
+
+        moveButton(false);
+
+        function completeLevel1() {
+            showMessage("NIVEAU 1 TERMINÉ ! 🎉");
+            setTimeout(() => {
+                currentLevel = 2;
+                document.getElementById('currentLevel').textContent = currentLevel;
+                document.getElementById('level1').style.display = 'none';
+                document.getElementById('level2').style.display = 'block';
+                clickProgress.style.display = 'block';
+                startLevel2();
+            }, 2000);
+        }
+
+        // NIVEAU 2 - Logique
+        function startLevel2() {
+            showMessage("Cliquez longtemps sur VOTRE souris ! 🖱️");
+            
+            mouseMoveInterval = setInterval(() => {
+                mouseX = Math.random() * (gameArea.offsetWidth - 100);
+                mouseY = Math.random() * (gameArea.offsetHeight - 100);
+                mouseEmoji.style.left = mouseX + 'px';
+                mouseEmoji.style.top = mouseY + 'px';
+            }, 300);
+
+            mouseEmoji.addEventListener('mousedown', () => { isHoldingMouse = true; });
+            mouseEmoji.addEventListener('mouseup', () => { isHoldingMouse = false; });
+
+            document.addEventListener('mousedown', handleRealMouseDown);
+            document.addEventListener('mouseup', handleRealMouseUp);
+        }
+
+        function handleRealMouseDown(e) {
+            if (currentLevel === 2 && !isPaused) {
+                if (e.target !== mouseEmoji) {
+                    isHoldingRealMouse = true;
+                }
+            }
+        }
+
+        function handleRealMouseUp() {
+            if (currentLevel === 2) {
+                isHoldingRealMouse = false;
+            }
+        }
+
+        setInterval(() => {
+            if (currentLevel === 2 && !isPaused) {
+                if (isHoldingRealMouse) {
+                    clickHoldProgress += 2;
+                    clickProgressBar.style.width = clickHoldProgress + '%';
+                    if (clickHoldProgress >= 100) {
+                        completeLevel2();
+                    }
+                } else {
+                    clickHoldProgress = Math.max(0, clickHoldProgress - 1);
+                    clickProgressBar.style.width = clickHoldProgress + '%';
+                }
+            }
+        }, 50);
+
+        function completeLevel2() {
+            clearInterval(mouseMoveInterval);
+            document.removeEventListener('mousedown', handleRealMouseDown);
+            document.removeEventListener('mouseup', handleRealMouseUp);
+            showMessage("NIVEAU 2 TERMINÉ ! 🎉");
+            setTimeout(() => {
+                currentLevel = 3;
+                document.getElementById('currentLevel').textContent = currentLevel;
+                document.getElementById('level2').style.display = 'none';
+                document.getElementById('passwordScreen').style.display = 'flex';
+                document.getElementById('passwordSection').style.display = 'block';
+                startLevel3();
+            }, 2000);
+        }
+
+        // NIVEAU 3 - Logique
+        function startLevel3() {
+            showMessage("Trouvez le mot de passe ! 🔐");
+            passwordInput.focus();
+        }
+
+        passwordInput.addEventListener('input', (e) => {
+            if (e.target.value.toUpperCase() === PASSWORD) {
+                completeLevel3();
+            }
+        });
+
+        function completeLevel3() {
+            showMessage("NIVEAU 3 TERMINÉ ! 🎉");
+            setTimeout(() => {
+                currentLevel = 4;
+                document.getElementById('currentLevel').textContent = currentLevel;
+                document.getElementById('passwordScreen').style.display = 'none';
+                document.getElementById('colorScreen').style.display = 'flex';
+                document.getElementById('contrastSection').style.display = 'block';
+                startLevel4();
+            }, 2000);
+        }
+
+        // NIVEAU 4 - Logique
+        function startLevel4() {
+            showMessage("Rendez l'écran NOIR ! 🌑");
+        }
+
+        contrastSlider.addEventListener('input', (e) => {
+            currentContrast = e.target.value;
+            document.getElementById('contrastValue').textContent = currentContrast + '%';
+            gameArea.style.filter = `contrast(${100 + parseInt(currentContrast)}%)`;
+            
+            if (currentContrast <= -180) {
+                completeLevel4();
+            }
+        });
+
+        function completeLevel4() {
+            showMessage("VICTOIRE ! 🏆");
+            setTimeout(() => {
+                document.getElementById('victoryScreen').style.display = 'flex';
+            }, 2000);
+        }
+
+        // MENU PAUSE
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                togglePause();
+            }
+        });
+
+        function togglePause() {
+            isPaused = !isPaused;
+            document.getElementById('pauseMenu').style.display = isPaused ? 'block' : 'none';
+        }
+
+        function resumeGame() {
+            togglePause();
+        }
+
+        // Sliders des paramètres
+        document.addEventListener('DOMContentLoaded', () => {
+            const sliders = [
+                { slider: 'volMasterSlider', display: 'volMaster' },
+                { slider: 'volMusicSlider', display: 'volMusic' },
+                { slider: 'volSFXSlider', display: 'volSFX' },
+                { slider: 'brightnessSlider', display: 'brightness' },
+                { slider: 'mouseSensSlider', display: 'mouseSens' },
+                { slider: 'hudSizeSlider', display: 'hudSize' }
+            ];
+
+            sliders.forEach(({ slider, display }) => {
+                const sliderEl = document.getElementById(slider);
+                const displayEl = document.getElementById(display);
+                if (sliderEl && displayEl) {
+                    sliderEl.addEventListener('input', (e) => {
+                        displayEl.textContent = e.target.value;
+                    });
+                }
+            });
+        });
+
+        function showMessage(text) {
+            const msg = document.getElementById('message');
+            msg.textContent = text;
+            msg.style.display = 'block';
+            setTimeout(() => {
+                msg.style.display = 'none';
+            }, 2000);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💜 — ???</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+        body {
+            background: #07000f;
+            min-height: 100vh;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            overflow: hidden;
+            cursor: crosshair;
+            font-family: 'Share Tech Mono', monospace;
+        }
+
+        /* ── Purple ambient background ── */
+        body::before {
+            content:'';
+            position:fixed; inset:0; z-index:0;
+            background:
+                radial-gradient(ellipse 80% 60% at 50% 40%, rgba(168,85,247,.18) 0%, transparent 70%),
+                radial-gradient(ellipse 50% 40% at 20% 80%, rgba(236,72,153,.1) 0%, transparent 60%),
+                radial-gradient(ellipse 40% 30% at 80% 20%, rgba(124,58,237,.12) 0%, transparent 60%);
+            pointer-events:none;
+        }
+
+        /* ── VHS scanlines ── */
+        body::after {
+            content:'';
+            position:fixed; inset:0; z-index:1;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(168,85,247,.025) 0px, rgba(168,85,247,.025) 1px,
+                transparent 1px, transparent 3px
+            );
+            pointer-events:none;
+            animation: scanMove 6s linear infinite;
+        }
+        @keyframes scanMove { 0%{background-position:0 0} 100%{background-position:0 80px} }
+
+        /* ── Purple rain canvas ── */
+        #purpleRain {
+            position:fixed; inset:0; z-index:0;
+            pointer-events:none;
+            opacity:.35;
+        }
+
+        /* ── Main container ── */
+        .stage {
+            position:relative; z-index:10;
+            display:flex; flex-direction:column;
+            align-items:center; justify-content:center;
+            gap:32px; padding:40px 20px;
+            text-align:center;
+        }
+
+        /* ── "PURPLE STUDIO" main logo ── */
+        #psName {
+            font-family:'Orbitron', monospace;
+            font-weight:900;
+            font-size: clamp(2.5rem, 10vw, 7rem);
+            letter-spacing:.12em;
+            color:#c084fc;
+            text-shadow:
+                0 0 10px rgba(192,132,252,1),
+                0 0 30px rgba(168,85,247,.9),
+                0 0 70px rgba(168,85,247,.6),
+                0 0 140px rgba(168,85,247,.3);
+            animation: psGlow 1.2s ease-in-out infinite alternate;
+            position:relative;
+            user-select:none;
+            transition: color .4s, text-shadow .4s, filter .4s;
+        }
+        @keyframes psGlow {
+            0%  {
+                text-shadow:
+                    0 0 10px rgba(192,132,252,1),
+                    0 0 30px rgba(168,85,247,.9),
+                    0 0 70px rgba(168,85,247,.6),
+                    0 0 140px rgba(168,85,247,.3);
+                filter: brightness(1);
+            }
+            100% {
+                text-shadow:
+                    0 0 20px #fff,
+                    0 0 50px rgba(232,121,249,1),
+                    0 0 100px rgba(168,85,247,.9),
+                    0 0 200px rgba(168,85,247,.5),
+                    0 0 300px rgba(168,85,247,.2);
+                filter: brightness(1.3);
+            }
+        }
+
+        /* Random flash overlay */
+        #flashOverlay {
+            position:fixed; inset:0; z-index:5;
+            pointer-events:none; opacity:0;
+            background: rgba(168,85,247,.6);
+            transition: opacity .05s;
+        }
+
+        /* ── Click hint ── */
+        #clickHint {
+            font-size:.72rem; color:rgba(192,132,252,.4);
+            letter-spacing:.15em; text-transform:uppercase;
+            animation: hintBlink 2s ease-in-out infinite;
+            transition: opacity .5s;
+        }
+        @keyframes hintBlink { 0%,100%{opacity:.3} 50%{opacity:.7} }
+
+        /* ── Click counter ── */
+        #clickCounter {
+            font-size:.8rem; color:rgba(168,85,247,.6);
+            letter-spacing:.1em; min-height:22px;
+            transition:color .3s;
+        }
+
+        /* ── Crack SVG overlay ── */
+        #crackOverlay {
+            position:fixed; inset:0; z-index:9;
+            pointer-events:none;
+        }
+        #crackOverlay svg { width:100%; height:100%; }
+
+        /* ── Fragments ── */
+        .frag {
+            position:fixed;
+            font-family:'Orbitron',monospace;
+            font-weight:900;
+            pointer-events:none;
+            z-index:15;
+            animation: fragBurst linear forwards;
+        }
+        @keyframes fragBurst {
+            0%   { opacity:1; transform: translate(0,0) scale(1) rotate(0deg); }
+            100% { opacity:0; transform: translate(var(--tx), var(--ty)) scale(0.2) rotate(var(--tr)); }
+        }
+
+        /* ── FAREWELL section ── */
+        #farewellSection {
+            display:none;
+            position:fixed; inset:0; z-index:20;
+            overflow-y:auto;
+            padding:60px 20px;
+        }
+        #farewellSection.visible { display:block; animation: farewellIn .8s ease forwards; }
+        @keyframes farewellIn { from{opacity:0} to{opacity:1} }
+
+        .farewell-inner {
+            max-width:680px;
+            margin:0 auto;
+            text-align:center;
+        }
+
+        /* Purple rain behind farewell */
+        #farewellRain {
+            position:fixed; inset:0; z-index:0;
+            pointer-events:none; opacity:.2;
+        }
+
+        .farewell-inner { position:relative; z-index:1; }
+
+        .fw-title-dead {
+            font-family:'Orbitron',monospace; font-weight:900;
+            font-size: clamp(2rem, 8vw, 5rem);
+            letter-spacing:.12em;
+            color:rgba(168,85,247,.3);
+            text-shadow:none;
+            text-decoration:line-through;
+            text-decoration-color:rgba(0,255,65,.5);
+            text-decoration-thickness:4px;
+            margin-bottom:8px;
+        }
+        .fw-dates {
+            font-size:.7rem; color:rgba(255,255,255,.2);
+            letter-spacing:.2em; margin-bottom:8px;
+        }
+        .fw-rip {
+            font-size:1.8rem; margin-bottom:40px;
+        }
+        .fw-arrow {
+            font-family:'Orbitron',monospace; font-weight:900;
+            font-size: clamp(1.5rem, 5vw, 3rem);
+            color:var(--g, #00ff41);
+            text-shadow:0 0 20px #00ff41, 0 0 60px rgba(0,255,65,.5);
+            letter-spacing:.15em;
+            margin-bottom:40px;
+            animation: newGlow 2s ease-in-out infinite alternate;
+        }
+        @keyframes newGlow {
+            0%  {text-shadow:0 0 20px #00ff41,0 0 60px rgba(0,255,65,.5);}
+            100%{text-shadow:0 0 40px #00ff41,0 0 100px rgba(0,255,65,.8),0 0 200px rgba(0,255,65,.3);}
+        }
+
+        .fw-quote {
+            font-size:.9rem; color:rgba(200,200,220,.5);
+            font-style:italic; line-height:2;
+            margin-bottom:40px;
+            padding:20px 28px;
+            border:1px solid rgba(168,85,247,.2);
+            background:rgba(100,0,150,.06);
+            border-radius:2px;
+        }
+        .fw-quote strong { color:rgba(168,85,247,.7); font-style:normal; }
+
+        .fw-blocks { display:grid; gap:16px; margin-bottom:40px; text-align:left; }
+
+        .fw-block {
+            display:flex; gap:14px;
+            padding:18px 20px; border-radius:2px;
+            border:1px solid rgba(168,85,247,.12);
+            background:rgba(100,0,150,.05);
+            font-size:.78rem; color:rgba(200,200,220,.55);
+            line-height:1.95;
+            transition:border-color .2s, background .2s;
+        }
+        .fw-block:hover { border-color:rgba(168,85,247,.3); background:rgba(100,0,150,.1); }
+        .fw-block-icon { font-size:1.5rem; flex-shrink:0; margin-top:2px; }
+        .fw-block strong {
+            display:block; margin-bottom:5px;
+            color:rgba(168,85,247,.8); font-family:'Orbitron',monospace;
+            font-size:.68rem; letter-spacing:.1em;
+        }
+
+        .fw-stats {
+            display:flex; gap:20px; justify-content:center; flex-wrap:wrap;
+            padding:20px; border:1px solid rgba(0,255,65,.2);
+            background:rgba(0,255,65,.03); border-radius:2px; margin-bottom:36px;
+        }
+        .fw-stat { text-align:center; }
+        .fw-stat-num {
+            font-family:'Orbitron',monospace; font-weight:900;
+            font-size:1.6rem; color:#00ff41;
+            text-shadow:0 0 15px #00ff41; display:block;
+        }
+        .fw-stat-lbl { font-size:.58rem; color:rgba(255,255,255,.3); letter-spacing:.12em; text-transform:uppercase; }
+
+        .fw-actions { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-bottom:60px; }
+
+        .btn-matrix {
+            display:inline-flex; align-items:center; gap:8px;
+            padding:11px 26px; border:1px solid #00ff41;
+            background:transparent; color:#00ff41;
+            font-family:'Orbitron',monospace; font-weight:700; font-size:.72rem;
+            cursor:pointer; text-decoration:none; letter-spacing:.12em;
+            text-transform:uppercase; border-radius:2px; transition:all .2s;
+            box-shadow:0 0 12px rgba(0,255,65,.2);
+        }
+        .btn-matrix:hover { background:rgba(0,255,65,.1); box-shadow:0 0 25px rgba(0,255,65,.5); }
+        .btn-ghost-sm {
+            display:inline-flex; align-items:center; gap:8px;
+            padding:11px 26px; border:1px solid rgba(255,255,255,.1);
+            background:transparent; color:rgba(255,255,255,.4);
+            font-family:'Orbitron',monospace; font-size:.68rem;
+            cursor:pointer; text-decoration:none; letter-spacing:.1em;
+            text-transform:uppercase; border-radius:2px; transition:all .2s;
+        }
+        .btn-ghost-sm:hover { border-color:rgba(255,255,255,.3); color:rgba(255,255,255,.7); }
+
+        .fw-terminal-footer {
+            font-size:.62rem; color:rgba(0,255,65,.25);
+            letter-spacing:.08em; line-height:2; margin-top:20px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Flash overlay -->
+<div id="flashOverlay"></div>
+
+<!-- Crack SVG overlay -->
+<div id="crackOverlay"><svg id="crackSVG"></svg></div>
+
+<!-- Purple rain -->
+<canvas id="purpleRain"></canvas>
+
+<!-- Main interactive stage -->
+<div class="stage" id="mainStage">
+
+    <div style="font-size:.62rem;color:rgba(168,85,247,.3);letter-spacing:.25em;text-transform:uppercase;animation:hintBlink 3s infinite;">
+        // PAGE SECRÈTE · ACCÈS RESTREINT //
+    </div>
+
+    <div id="psName" onclick="handleClick()">PURPLE STUDIO</div>
+
+    <div id="clickHint">clique dessus pour lui dire adieu</div>
+    <div id="clickCounter"></div>
+
+</div>
+
+<!-- FAREWELL SECTION — révélée après 20 clics -->
+<div id="farewellSection">
+    <canvas id="farewellRain"></canvas>
+    <div class="farewell-inner">
+
+        <div class="fw-title-dead">PURPLE STUDIO</div>
+        <div class="fw-dates">2025 – 2026</div>
+        <div class="fw-rip">🕯️ R.I.P 🕯️</div>
+
+        <div class="fw-arrow">→ MATRIXIA</div>
+
+        <div class="fw-quote">
+            "Purple Studio... c'était un nom de code inventé à 16 ans<br>
+            parce que j'aimais le violet et que <strong>'studio'</strong> ça faisait sérieux.<br>
+            Pas très original. Mais c'était <em>le mien</em>.<br>
+            Et pendant un moment, c'était tout."<br>
+            <span style="font-size:.72rem;color:rgba(168,85,247,.4);">— le dev, nostalgique à 3h14 du mat'</span>
+        </div>
+
+        <div class="fw-blocks">
+            <div class="fw-block">
+                <span class="fw-block-icon">🎮</span>
+                <div>
+                    <strong>Aux premiers joueurs</strong>
+                    Vous étiez là quand le site était moche, quand les jeux buggaient,
+                    quand le serveur tombait pour 3 connexions simultanées.
+                    Vous avez quand même joué. Vous avez quand même repassé le lendemain.
+                    Je sais pas si vous vous rendez compte à quel point ça m'a donné envie
+                    de continuer à coder plutôt que de tout laisser tomber.
+                </div>
+            </div>
+            <div class="fw-block">
+                <span class="fw-block-icon">💬</span>
+                <div>
+                    <strong>Aux gens du Discord</strong>
+                    Les suggestions nulles, les suggestions géniales, les "t'aurais pas un jeu de..."
+                    à 23h, les bug reports avec zéro contexte ("ça marche pas"), les "quand est-ce que
+                    la v2 sort" alors que j'avais même pas annoncé de v2... Merci. Vraiment.
+                    Vous m'avez gardé honnête et motivé.
+                </div>
+            </div>
+            <div class="fw-block">
+                <span class="fw-block-icon">⭐</span>
+                <div>
+                    <strong>Aux membres Premium</strong>
+                    Vous avez dépensé vos Purple Coins sur un site fait par un seul mec dans sa chambre.
+                    C'est le truc le plus touchant qui soit. Sachez que chaque pièce dépensée m'a donné
+                    l'énergie de coder une nuit de plus. Sérieusement. Merci.
+                </div>
+            </div>
+            <div class="fw-block">
+                <span class="fw-block-icon">🐛</span>
+                <div>
+                    <strong>Aux chasseurs de bugs</strong>
+                    Vous avez trouvé des trucs que j'aurais jamais vus. Le jeu qui se freeze en pleine partie,
+                    le bouton qui marche qu'à moitié sur mobile, le score qui se remet à zéro si tu tousses trop fort.
+                    Grâce à vous, le site était beaucoup moins cassé. C'est vraiment pas rien.
+                </div>
+            </div>
+            <div class="fw-block">
+                <span class="fw-block-icon">🌙</span>
+                <div>
+                    <strong>À Purple Studio lui-même</strong>
+                    T'étais pas parfait. T'étais un peu lourd à charger, un peu trop violet,
+                    un peu trop chargé en effets. Mais t'étais sincère.
+                    Chaque pixel a été placé par quelqu'un qui voulait juste créer quelque chose de cool et le partager.
+                    C'est pas donné à tout le monde. <em>Repose bien, l'ami.</em> 🕯️
+                </div>
+            </div>
+        </div>
+
+        <div class="fw-stats">
+            <div class="fw-stat"><span class="fw-stat-num">11</span><span class="fw-stat-lbl">Jeux créés</span></div>
+            <div class="fw-stat"><span class="fw-stat-num">15k+</span><span class="fw-stat-lbl">Joueurs</span></div>
+            <div class="fw-stat"><span class="fw-stat-num">∞</span><span class="fw-stat-lbl">Cafés bus</span></div>
+            <div class="fw-stat"><span class="fw-stat-num">0</span><span class="fw-stat-lbl">Regrets</span></div>
+            <div class="fw-stat"><span class="fw-stat-num">💜</span><span class="fw-stat-lbl">Merci</span></div>
+        </div>
+
+        <div class="fw-actions">
+            <a href="index.html" class="btn-matrix">⬢ Entrer dans MATRIXIA</a>
+            <a href="index.html" class="btn-ghost-sm">Retour à l'accueil</a>
+        </div>
+
+        <div class="fw-terminal-footer">
+            root@matrixia:~$ echo "merci d'avoir été là depuis le début"<br>
+            <span style="color:rgba(0,255,65,.4);">merci d'avoir été là depuis le début 💚</span><br><br>
+            root@matrixia:~$ rm -rf /purple-studio/<br>
+            <span style="color:rgba(255,50,50,.4);">suppression en cours... ████████████ 100% ✓</span><br>
+            root@matrixia:~$ mkdir /matrixia/<br>
+            <span style="color:rgba(0,255,65,.4);">répertoire créé. bienvenue dans la matrice.</span>
+        </div>
+
+    </div>
+</div>
+
+<script>
+/* ── Purple Rain ── */
+function startPurpleRain(canvasId, opacity) {
+    const canvas = document.getElementById(canvasId);
+    if(!canvas) return;
+    const ctx = canvas.getContext('2d');
+    function resize(){
+        canvas.width  = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+    const chars = 'アイウエオカキクケコサシスセソPURPLESTUDIO0123456789💜◈⬡✦';
+    let cols = Math.floor(canvas.width / 16);
+    let drops = Array(cols).fill(1);
+    setInterval(()=>{
+        cols = Math.floor(canvas.width / 16);
+        if(drops.length < cols) drops.push(...Array(cols - drops.length).fill(1));
+        ctx.fillStyle = 'rgba(7,0,15,.06)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.font = '14px "Share Tech Mono", monospace';
+        for(let i = 0; i < cols; i++){
+            const c = chars[Math.floor(Math.random()*chars.length)];
+            // leading char brighter
+            if(drops[i] < 3){
+                ctx.fillStyle = '#fff';
+                ctx.shadowColor = '#c084fc';
+                ctx.shadowBlur = 10;
+            } else {
+                const a = Math.max(0.08, 1 - drops[i]/canvas.height*16*.03);
+                ctx.fillStyle = `rgba(168,85,247,${a})`;
+                ctx.shadowBlur = 0;
+            }
+            ctx.fillText(c, i*16, drops[i]*16);
+            if(drops[i]*16 > canvas.height && Math.random() > .975) drops[i] = 0;
+            drops[i]++;
+        }
+    }, 50);
+}
+startPurpleRain('purpleRain', .35);
+
+/* ── Random flashes ── */
+const flashEl = document.getElementById('flashOverlay');
+function randomFlash(){
+    const delay = 800 + Math.random() * 2400;
+    setTimeout(()=>{
+        flashEl.style.opacity = (.15 + Math.random()*.35).toFixed(2);
+        setTimeout(()=>{
+            flashEl.style.opacity = '0';
+            // occasional double flash
+            if(Math.random() > .6){
+                setTimeout(()=>{
+                    flashEl.style.opacity = (.1 + Math.random()*.2).toFixed(2);
+                    setTimeout(()=>{ flashEl.style.opacity='0'; randomFlash(); }, 60);
+                }, 80);
+            } else {
+                randomFlash();
+            }
+        }, 60 + Math.random()*80);
+    }, delay);
+}
+randomFlash();
+
+/* ── Click Easter Egg ── */
+let clicks = 0;
+const MAX = 20;
+let done = false;
+const nameEl    = document.getElementById('psName');
+const counterEl = document.getElementById('clickCounter');
+const hintEl    = document.getElementById('clickHint');
+
+const msgs = [
+    `encore ${MAX-1} clics...`,
+    `${MAX-2} clics restants... t'es sûr ?`,
+    `${MAX-3} clics — il résiste encore`,
+    `${MAX-4}... le violet tient bon`,
+    `${MAX-5} clics — ça commence à craquer`,
+    `${MAX-6}... il sent le danger`,
+    `${MAX-7} clics — les fissures apparaissent`,
+    `${MAX-8}... il supplie d'arrêter`,
+    `${MAX-9} clics — il fléchit`,
+    `${MAX-10}... le violet s'effondre`,
+    `PLUS QUE ${MAX-11} !!!`,
+    `${MAX-12}... presque là`,
+    `encore ${MAX-13}... lâche pas`,
+    `${MAX-14}... il agonise`,
+    `DERNIER SOUFFLE — encore ${MAX-15}`,
+    `${MAX-16}... ça va finir`,
+    `3 clics... adieu se rapproche`,
+    `2 clics... 💜`,
+    `DERNIER CLIC...`,
+];
+
+function handleClick(){
+    if(done) return;
+    clicks++;
+    const ratio = clicks / MAX;
+
+    // Shake
+    const shk = ratio * 14;
+    nameEl.style.transform = `translate(${(Math.random()-.5)*shk}px,${(Math.random()-.5)*shk}px) rotate(${(Math.random()-.5)*ratio*5}deg)`;
+    setTimeout(()=>{ nameEl.style.transform=''; }, 90);
+
+    // Fade purple progressively → desaturate
+    const purpleAlpha = Math.max(.05, 1 - ratio * .95);
+    nameEl.style.color = `rgba(192,132,252,${purpleAlpha})`;
+    nameEl.style.textShadow = `0 0 ${Math.max(2,20-ratio*18)}px rgba(168,85,247,${purpleAlpha}), 0 0 ${Math.max(5,60-ratio*55)}px rgba(168,85,247,${purpleAlpha*.6})`;
+
+    // Flash
+    flashEl.style.opacity = (.2 + ratio*.3).toFixed(2);
+    setTimeout(()=>{ flashEl.style.opacity='0'; }, 80);
+
+    // Eject purple fragments
+    const count = Math.ceil(ratio * 8);
+    const rect  = nameEl.getBoundingClientRect();
+    for(let i=0; i<count; i++){
+        const frag = document.createElement('span');
+        frag.className = 'frag';
+        const letters = 'PURPLESTUDIO💜✦◈';
+        frag.textContent = letters[Math.floor(Math.random()*letters.length)];
+        const tx = ((Math.random()-.5)*300).toFixed(0)+'px';
+        const ty = (-(Math.random()*200+50)).toFixed(0)+'px';
+        const tr = ((Math.random()-.5)*720).toFixed(0)+'deg';
+        frag.style.cssText += `
+            left:${rect.left + Math.random()*rect.width}px;
+            top:${rect.top + Math.random()*rect.height}px;
+            font-size:${.8+Math.random()*1.4}rem;
+            color:rgba(192,132,252,${.4+Math.random()*.6});
+            text-shadow:0 0 10px #a855f7;
+            --tx:${tx}; --ty:${ty}; --tr:${tr};
+            animation-duration:${.5+Math.random()*.6}s;
+        `;
+        document.body.appendChild(frag);
+        setTimeout(()=>frag.remove(), 900);
+    }
+
+    // Crack lines every 4 clicks
+    if(clicks % 3 === 0) addCrack(ratio);
+
+    // Counter message
+    counterEl.textContent = msgs[Math.min(clicks-1, msgs.length-1)];
+
+    if(clicks >= MAX) triggerBreak();
+}
+
+function addCrack(ratio){
+    const svg = document.getElementById('crackSVG');
+    const W = window.innerWidth, H = window.innerHeight;
+    // Center crack origin around name
+    const cx = W/2 + (Math.random()-.5)*W*.3;
+    const cy = H/2 + (Math.random()-.5)*H*.15;
+    let d = `M${cx},${cy}`;
+    const segs = 4 + Math.floor(ratio*6);
+    for(let i=0;i<segs;i++){
+        d += ` L${cx+(Math.random()-.5)*W*.5} ${cy+(Math.random()-.5)*H*.4}`;
+    }
+    const path = document.createElementNS('http://www.w3.org/2000/svg','path');
+    path.setAttribute('d', d);
+    path.setAttribute('stroke', `rgba(168,85,247,${.3+ratio*.7})`);
+    path.setAttribute('stroke-width', (.5+ratio*2.5).toFixed(1));
+    path.setAttribute('fill','none');
+    path.style.filter = `drop-shadow(0 0 ${3+ratio*8}px #a855f7)`;
+    // draw animation
+    const len = 1000;
+    path.style.strokeDasharray = len;
+    path.style.strokeDashoffset = len;
+    path.style.transition = 'stroke-dashoffset .3s ease';
+    svg.appendChild(path);
+    requestAnimationFrame(()=>{ path.style.strokeDashoffset = '0'; });
+}
+
+function triggerBreak(){
+    done = true;
+    hintEl.style.opacity = '0';
+    counterEl.textContent = '';
+
+    // Massive flash sequence
+    let f = 0;
+    const flashSeq = setInterval(()=>{
+        flashEl.style.opacity = f%2===0 ? '0.5' : '0';
+        f++;
+        if(f > 8) { clearInterval(flashSeq); flashEl.style.opacity='0'; }
+    }, 60);
+
+    // Explode letters
+    setTimeout(()=>{
+        nameEl.style.animation = 'none';
+        nameEl.style.transition = 'all .4s ease';
+        nameEl.style.transform = 'scale(1.3)';
+        nameEl.style.opacity = '0';
+        nameEl.style.filter = 'blur(12px)';
+
+        // Letters burst
+        'PURPLE STUDIO'.split('').forEach((ch, i) => {
+            if(ch === ' ') return;
+            const el = document.createElement('span');
+            el.className = 'frag';
+            el.textContent = ch;
+            const cx = window.innerWidth/2;
+            const cy = window.innerHeight/2;
+            const angle = (i / 13) * Math.PI * 2;
+            const dist  = 200 + Math.random()*300;
+            el.style.cssText = `
+                left:${cx}px; top:${cy}px;
+                font-family:'Orbitron',monospace; font-weight:900;
+                font-size:${2+Math.random()*2}rem;
+                color:rgba(192,132,252,.9);
+                text-shadow:0 0 20px #a855f7;
+                --tx:${(Math.cos(angle)*dist).toFixed(0)}px;
+                --ty:${(Math.sin(angle)*dist - 100).toFixed(0)}px;
+                --tr:${((Math.random()-.5)*720).toFixed(0)}deg;
+                animation-duration:${.7+Math.random()*.5}s;
+            `;
+            document.body.appendChild(el);
+            setTimeout(()=>el.remove(), 1200);
+        });
+
+        // Crack the entire screen with many lines
+        for(let i=0;i<12;i++){
+            setTimeout(()=>addCrack(1), i*40);
+        }
+
+        // After everything — show farewell
+        setTimeout(()=>{
+            document.getElementById('mainStage').style.display = 'none';
+            document.getElementById('crackOverlay').style.opacity = '0';
+
+            const fw = document.getElementById('farewellSection');
+            fw.classList.add('visible');
+            startPurpleRain('farewellRain', .2);
+
+            // Type out the terminal footer
+            const footer = document.querySelector('.fw-terminal-footer');
+            if(footer){
+                footer.style.opacity = '0';
+                footer.style.transition = 'opacity .8s ease 1s';
+                requestAnimationFrame(()=>{ footer.style.opacity='1'; });
+            }
+        }, 900);
+    }, 500);
+}
+</script>
+</body>
+</html>
